@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="in.innovatehub.ankita_mehta.tinyears.MainActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="fill">
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/imageViewAC"
+            android:padding="@dimen/mainActivity_image_padding"
+            android:src="@drawable/airconditionicon"
+            android:layout_below="@+id/linearLayout"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:layout_marginTop="65dp" />
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/imageViewFan"
+            android:src="@drawable/fanicon"
+            android:padding="@dimen/mainActivity_image_padding"
+            android:layout_below="@+id/linearLayout"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:layout_marginTop="65dp" />
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/imageViewMW"
+            android:src="@drawable/microwaveicon"
+            android:padding="@dimen/mainActivity_image_padding"
+            android:layout_below="@+id/linearLayout"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:layout_marginTop="65dp" />
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/imageViewHuman"
+            android:src="@drawable/humanicon"
+            android:padding="@dimen/mainActivity_image_padding"
+            android:layout_below="@+id/linearLayout"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:layout_marginTop="65dp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Let me monitor your room while you work."
+        android:id="@+id/textView_mainActivity"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:padding="@dimen/activity_horizontal_margin"
+        >
+
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="fitXY"
+            android:id="@+id/imageButton"
+            android:src="@drawable/playicon"
+            android:background="@drawable/pauseicon"
+            android:layout_below="@+id/linearLayout"
+            android:layout_centerHorizontal="true"
+            android:cropToPadding="false" />
+    </LinearLayout>
+
+</RelativeLayout>
