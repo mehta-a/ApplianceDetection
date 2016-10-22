@@ -3,48 +3,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center|center_horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:screenOrientation="portrait"
-    tools:context="in.innovatehub.ankita_mehta.tinyears.RecordActivity"
-    android:gravity="center">
-<!--
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout_record">
-        <in.innovatehub.ankita_mehta.tinyears.RecordActivity.RecordButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/recordbutton"
-            />
-        <in.innovatehub.ankita_mehta.tinyears.RecordActivity.PlayButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/playbutton"
-            />
-    </LinearLayout>
--->
+    android:orientation="vertical"
+    tools:context="in.innovatehub.ankita_mehta.tinyears.RecordActivity">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout_record"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
+
         <ImageButton
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"
             android:id="@+id/imageButton2"
-            android:src="@drawable/micicon" />
-        <ImageButton
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:scaleType="fitXY"
+            android:src="@drawable/micicon" />
+
+        <ImageButton
             android:id="@+id/imageButton3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
             android:src="@drawable/playicon" />
+
+        <Button
+            android:id="@+id/showMeStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="loadStats"
+            android:text="@string/showMeStats" />
+
+        <Button
+            android:id="@+id/recorderApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:gravity="center"
+            android:text="@string/UseRecorderApp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadStatsLinearLayout"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/loadingMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/loadingMessage"
+            />
+
+        <ProgressBar
+            android:id="@+id/downloadProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+             />
+    </LinearLayout>
+
+    <in.innovatehub.ankita_mehta.tinyears.VisualizerView
+        android:id="@+id/visualizer"
+        android:layout_width="220dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp" />
 
 </LinearLayout>

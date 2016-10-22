@@ -1,26 +1,40 @@
 package in.innovatehub.ankita_mehta.tinyears;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class RecordActivity extends Activity {
-
+    private VisualizerView visualizerView;
     private static final String LOG_TAG = "AudioRecordTest";
+
+    private static final int REQUESTCODE_RECORDING = 109201;
+    private Button mRecorderApp = null;
+
     private static String mFileName = null;
 
-    //private RecordButton mRecordButton = null;
     private MediaRecorder mRecorder = null;
-
-    //private PlayButton   mPlayButton = null;
     private MediaPlayer mPlayer = null;
 
     private ImageButton mRecordImageButton = null;
@@ -28,6 +42,29 @@ public class RecordActivity extends Activity {
 
     boolean mStartRecording = true;
     boolean mStartPlaying = true;
+
+    private ProgressBar mProgressBar = null;
+    private TextView mTextViewLoad = null;
+    private Button mShowStatsButton = null;
+
+    private LinearLayout mLoadingSection = null;
+
+    private Handler handler = new Handler();
+    final Runnable updater = new Runnable() {
+        public void run() {
+            handler.postDelayed(this, 1);
+            if(mRecorder!=null) {
+                int maxAmplitude = mRecorder.getMaxAmplitude();
+
+                if (maxAmplitude != 0) {
+                    visualizerView.addAmplitude(maxAmplitude);
+                }
+            }
+            else{
+
+            }
+        }
+    };
 
     private void onRecord(boolean start) {
         if (start) {
@@ -91,6 +128,7 @@ public class RecordActivity extends Activity {
         }
         try {
             mRecorder.start();
+            Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Log.e(LOG_TAG, "start() failed");
         }
@@ -100,6 +138,7 @@ public class RecordActivity extends Activity {
         if (mRecorder != null) {
             mRecorder.stop();
             mRecorder.release();
+            Toast.makeText(getApplicationContext(), "Audio recorded successfully",Toast.LENGTH_LONG).show();
             mRecorder = null;
             mRecordImageButton.setImageResource(R.drawable.micicon);
             // mStartRecording = true;
@@ -124,6 +163,14 @@ public class RecordActivity extends Activity {
         setContentView(R.layout.activity_record);
         mRecordImageButton = (ImageButton) findViewById(R.id.imageButton2);
         mPlayImageButton = (ImageButton) findViewById(R.id.imageButton3);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.downloadProgress);
+        mTextViewLoad = (TextView) findViewById(R.id.loadingMessage);
+        mShowStatsButton = (Button) findViewById(R.id.showMeStats);
+        mLoadingSection = (LinearLayout) findViewById(R.id.loadStatsLinearLayout);
+        mRecorderApp = (Button) findViewById(R.id.recorderApp);
+        visualizerView = (VisualizerView) findViewById(R.id.visualizer);
+
         AudioRecordTest("00000");
         mRecordImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -159,6 +206,42 @@ public class RecordActivity extends Activity {
             }
         });
 
+        //Calling recorder ...
+        mRecorderApp.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                if (isAvailable(getApplicationContext(), intent)) {
+                    startActivityForResult(intent, REQUESTCODE_RECORDING);
+                }
+            }
+        });
+    }
+    public static boolean isAvailable(Context ctx, Intent intent) {
+        final PackageManager mgr = ctx.getPackageManager();
+        List<ResolveInfo> list =
+                mgr.queryIntentActivities(intent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
+
+    protected void onActivityResult(int requestCode,
+                                    int resultCode, Intent intent) {
+        if (requestCode == REQUESTCODE_RECORDING) {
+            if (resultCode == RESULT_OK) {
+                Uri audioUri = intent.getData();
+                // make use of this MediaStore uri
+                // e.g. store it somewhere
+
+            }
+            else {
+                // react meaningful to problems
+            }
+        }
+        else {
+            super.onActivityResult(requestCode,
+                    resultCode, intent);
+        }
     }
 
     @Override
@@ -168,10 +251,62 @@ public class RecordActivity extends Activity {
             mRecorder.release();
             mRecorder = null;
         }
-
         if (mPlayer != null) {
             mPlayer.release();
             mPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(updater);
+        mRecorder.stop();
+        mRecorder.reset();
+        mRecorder.release();
+    }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        handler.post(updater);
+    }
+
+    public boolean loadStats(View view){
+        boolean successful = false;
+        /*
+        1.  Create the objects related to message sending to server.
+        2. Open connection(if any)
+        3. Read Data using input stream
+        4. Open file output, save if any
+        5. close connections
+         */
+        Thread myThread = new Thread(new LoadStatsThread());
+        myThread.start();
+
+        try {
+            myThread.join(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (myThread.isAlive()){
+            myThread.interrupt();
+        }
+        Toast.makeText(getApplicationContext(),"Load finished",Toast.LENGTH_SHORT);
+        mLoadingSection.setVisibility(View.GONE);
+        return false;
+    }
+
+    private class LoadStatsThread implements Runnable{
+
+        @Override
+        public void run() {
+            //Do thread task here
+            RecordActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLoadingSection.setVisibility(View.VISIBLE);
+                }
+            });
         }
     }
 }

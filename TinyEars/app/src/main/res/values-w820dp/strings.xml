@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TinyEars</string>
     <string name="loadingMessage">Loading ...</string>
     <string name="showMeStats">Show Me Results</string>
     <string name="UseRecorderApp">Use Recorder App</string>
